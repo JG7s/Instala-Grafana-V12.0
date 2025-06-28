@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e
 
-# Define o IP do servidor Zabbix #
-IP_SERVIDOR="172.17.1.6"
-
 
 echo "Atualizando Linux"
 apt update -y
