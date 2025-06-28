@@ -1,1 +1,1 @@
-# Intala-Grafana-V12.0
+# Instala-Grafana-V12.0
