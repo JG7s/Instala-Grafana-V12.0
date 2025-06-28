@@ -1,0 +1,76 @@
+#!/bin/bash
+set -e
+
+# Define o IP do servidor Zabbix #
+IP_SERVIDOR="172.17.1.6"
+
+
+
+#Atualiza repositorios do Linux
+echo "atualizando arquivo /etc/apt/source.list"
+
+sed -i 's/deb http:\/\/deb\.debian\.org\/debian\/ bullseye main/deb http:\/\/deb\.debian\.org\/debian\/ bullseye main contrib non-free/g' /etc/apt/sources.list
+sed -i 's/deb-src http:\/\/deb\.debian\.org\/debian\/ bullseye main/deb-src http:\/\/deb\.debian\.org\/debian\/ bullseye main contrib non-free/g' /etc/apt/sources.list
+sed -i 's/deb http:\/\/security\.debian\.org\/debian-security bullseye-security main/deb http:\/\/security\.debian\.org\/debian-security bullseye-security main contrib non-free/g' /etc/apt/sources.list
+sed -i 's/deb-src http:\/\/security\.debian\.org\/debian-security bullseye-security main/deb-src http:\/\/security\.debian\.org\/debian-security bullseye-security main contrib non-free/g' /etc/apt/sources.list
+sed -i 's/deb http:\/\/deb\.debian\.org\/debian\/ bullseye-updates main/deb http:\/\/deb\.debian\.org\/debian\/ bullseye-updates main contrib non-free/g' /etc/apt/sources.list
+sed -i 's/^deb-src http:\/\/deb.debian.org\/debian\/ bullseye-updates main/deb-src http:\/\/deb.debian.org\/debian\/ bullseye-updates main contrib non-free/' /etc/apt/sources.list
+
+
+echo "Atualizando Linux"
+apt update -y
+apt upgrade -y
+apt update -y
+
+echo "Tunning no Kernel"
+apt install firmware-linux firmware-linux-free firmware-linux-nonfree -y
+
+
+echo "Instalando o chrony"
+apt install -y chrony
+systemctl enable --now chrony
+systemctl start chronyd
+
+echo "Instalando utilitários"
+apt-get install vim wget curl tcpdump perl sshpass telnet gnupg gnupg2 apt-transport-https sudo nmap libsnmp-dev build-essential lsb-release ncdu htop zstd -y
+wget remontti.com.br/debian; bash debian; su -
+
+
+
+echo "Instalando Grafava V12"
+apt-get install -y adduser libfontconfig1 musl
+
+#Instala o Grafana v12
+wget https://dl.grafana.com/oss/release/grafana_12.0.0_amd64.deb
+dpkg -i grafana_12.0.0_amd64.deb
+
+apt update
+
+#Baixar Plugins 
+grafana-cli plugins install alexanderzobnin-zabbix-app
+
+grafana-cli plugins install volkovlabs-echarts-panel
+
+grafana-cli plugins install grafana-clock-panel
+
+grafana-cli plugins update-all
+
+#Inicializa o Grafana junto com a Vm
+systemctl daemon-reload
+systemctl enable --now grafana-server
+systemctl start grafana-server
+
+
+echo "Instala o Zabbix Agent V7"
+
+wget https://repo.zabbix.com/zabbix/7.0/debian/pool/main/z/zabbix-release/zabbix-release_latest+debian12_all.deb
+sudo dpkg -i zabbix-release_latest+debian12_all.deb
+sudo apt update -y
+
+sudo apt install zabbix-agent -y
+
+sudo sed -i "s/^Server=.*/Server=$IP_SERVIDOR/" /etc/zabbix/zabbix_agentd.conf
+sudo sed -i "s/^Hostname=.*/Hostname=Zabbix Banco/" /etc/zabbix/zabbix_agentd.conf
+
+sudo systemctl enable --now zabbix-agent
+sudo systemctl restart zabbix-agent
