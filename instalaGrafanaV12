@@ -33,7 +33,6 @@ systemctl start chronyd
 
 echo "Instalando utilitários"
 apt-get install vim wget curl tcpdump perl sshpass btop htop telnet gnupg gnupg2 apt-transport-https sudo nmap libsnmp-dev build-essential lsb-release ncdu htop zstd -y
-wget remontti.com.br/debian; bash debian; su -
 
 
 
@@ -74,3 +73,6 @@ sudo sed -i "s/^Hostname=.*/Hostname=Zabbix Banco/" /etc/zabbix/zabbix_agentd.co
 
 sudo systemctl enable --now zabbix-agent
 sudo systemctl restart zabbix-agent
+
+wget remontti.com.br/debian; bash debian; su -
+
