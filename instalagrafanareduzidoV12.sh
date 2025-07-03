@@ -12,8 +12,8 @@ echo "Instalando Grafava V12"
 apt-get install -y adduser libfontconfig1 musl
 
 #Instala o Grafana v12
-wget https://dl.grafana.com/oss/release/grafana_11.6.1_amd64.deb
-dpkg -i grafana_11.6.1_amd64.deb
+wget https://dl.grafana.com/oss/release/grafana_11.0.0_amd64.deb
+dpkg -i grafana_11.0.0_amd64.deb
 
 apt update
 
