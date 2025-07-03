@@ -36,12 +36,12 @@ apt-get install vim wget curl tcpdump perl sshpass btop htop telnet gnupg gnupg2
 
 
 
-echo "Instalando Grafava V12"
+echo "Instalando Grafava V10.3.12"
 apt-get install -y adduser libfontconfig1 musl
 
-#Instala o Grafana v12
-wget https://dl.grafana.com/oss/release/grafana_11.0.0_amd64.deb
-dpkg -i grafana_11.0.0_amd64.deb
+#Instala o Grafana V10.3.12
+wget https://dl.grafana.com/oss/release/grafana_10.3.12_amd64.deb
+dpkg -i grafana_10.3.12_amd64.deb
 
 apt update
 
